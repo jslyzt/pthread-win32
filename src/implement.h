@@ -1,40 +1,3 @@
-/*
- * implement.h
- *
- * Definitions that don't need to be public.
- *
- * Keeps all the internals out of pthread.h
- *
- * --------------------------------------------------------------------------
- *
- *      Pthreads-win32 - POSIX Threads Library for Win32
- *      Copyright(C) 1998 John E. Bossom
- *      Copyright(C) 1999,2005 Pthreads-win32 contributors
- * 
- *      Contact Email: Ross.Johnson@homemail.com.au
- * 
- *      The current list of contributors is contained
- *      in the file CONTRIBUTORS included with the source
- *      code distribution. The list can also be seen at the
- *      following World Wide Web location:
- *      http://sources.redhat.com/pthreads-win32/contributors.html
- * 
- *      This library is free software; you can redistribute it and/or
- *      modify it under the terms of the GNU Lesser General Public
- *      License as published by the Free Software Foundation; either
- *      version 2 of the License, or (at your option) any later version.
- * 
- *      This library is distributed in the hope that it will be useful,
- *      but WITHOUT ANY WARRANTY; without even the implied warranty of
- *      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- *      Lesser General Public License for more details.
- * 
- *      You should have received a copy of the GNU Lesser General Public
- *      License along with this library in the file COPYING.LIB;
- *      if not, write to the Free Software Foundation, Inc.,
- *      59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
- */
-
 #if !defined(_IMPLEMENT_H)
 #define _IMPLEMENT_H
 
@@ -48,7 +11,7 @@
  * In case windows.h doesn't define it (e.g. WinCE perhaps)
  */
 #if defined(WINCE)
-typedef VOID (APIENTRY *PAPCFUNC)(DWORD dwParam);
+typedef VOID (APIENTRY* PAPCFUNC)(DWORD dwParam);
 #endif
 
 /*
@@ -107,30 +70,29 @@ typedef VOID (APIENTRY *PAPCFUNC)(DWORD dwParam);
 #else
 #  define int64_t _int64
 #  if defined(_MSC_VER) && _MSC_VER < 1300
-     typedef long intptr_t;
+typedef long intptr_t;
 #  endif
 #endif
 
-typedef enum
-{
-  /*
-   * This enumeration represents the state of the thread;
-   * The thread is still "alive" if the numeric value of the
-   * state is greater or equal "PThreadStateRunning".
-   */
-  PThreadStateInitial = 0,	/* Thread not running                   */
-  PThreadStateRunning,		/* Thread alive & kicking               */
-  PThreadStateSuspended,	/* Thread alive but suspended           */
-  PThreadStateCancelPending,	/* Thread alive but                     */
-                                /* has cancelation pending.             */
-  PThreadStateCanceling,	/* Thread alive but is                  */
-                                /* in the process of terminating        */
-                                /* due to a cancellation request        */
-  PThreadStateExiting,		/* Thread alive but exiting             */
-                                /* due to an exception                  */
-  PThreadStateLast,             /* All handlers have been run and now   */
-                                /* final cleanup can be done.           */
-  PThreadStateReuse             /* In reuse pool.                       */
+typedef enum {
+    /*
+     * This enumeration represents the state of the thread;
+     * The thread is still "alive" if the numeric value of the
+     * state is greater or equal "PThreadStateRunning".
+     */
+    PThreadStateInitial = 0,	/* Thread not running                   */
+    PThreadStateRunning,		/* Thread alive & kicking               */
+    PThreadStateSuspended,	/* Thread alive but suspended           */
+    PThreadStateCancelPending,	/* Thread alive but                     */
+    /* has cancelation pending.             */
+    PThreadStateCanceling,	/* Thread alive but is                  */
+    /* in the process of terminating        */
+    /* due to a cancellation request        */
+    PThreadStateExiting,		/* Thread alive but exiting             */
+    /* due to an exception                  */
+    PThreadStateLast,             /* All handlers have been run and now   */
+    /* final cleanup can be done.           */
+    PThreadStateReuse             /* In reuse pool.                       */
 }
 PThreadState;
 
@@ -140,60 +102,58 @@ typedef struct ptw32_robust_node_t_  ptw32_robust_node_t;
 typedef struct ptw32_thread_t_       ptw32_thread_t;
 
 
-struct ptw32_thread_t_
-{
-  unsigned __int64 seqNumber;	/* Process-unique thread sequence number */
-  HANDLE threadH;		/* Win32 thread handle - POSIX thread is invalid if threadH == 0 */
-  pthread_t ptHandle;		/* This thread's permanent pthread_t handle */
-  ptw32_thread_t * prevReuse;	/* Links threads on reuse stack */
-  volatile PThreadState state;
-  ptw32_mcs_lock_t threadLock;	/* Used for serialised access to public thread state */
-  ptw32_mcs_lock_t stateLock;	/* Used for async-cancel safety */
-  HANDLE cancelEvent;
-  void *exitStatus;
-  void *parms;
-  void *keys;
-  void *nextAssoc;
+struct ptw32_thread_t_ {
+    unsigned __int64 seqNumber;	/* Process-unique thread sequence number */
+    HANDLE threadH;		/* Win32 thread handle - POSIX thread is invalid if threadH == 0 */
+    pthread_t ptHandle;		/* This thread's permanent pthread_t handle */
+    ptw32_thread_t* prevReuse;	/* Links threads on reuse stack */
+    volatile PThreadState state;
+    ptw32_mcs_lock_t threadLock;	/* Used for serialised access to public thread state */
+    ptw32_mcs_lock_t stateLock;	/* Used for async-cancel safety */
+    HANDLE cancelEvent;
+    void* exitStatus;
+    void* parms;
+    void* keys;
+    void* nextAssoc;
 #if defined(__CLEANUP_C)
-  jmp_buf start_mark;		/* Jump buffer follows void* so should be aligned */
+    jmp_buf start_mark;		/* Jump buffer follows void* so should be aligned */
 #endif				/* __CLEANUP_C */
 #if defined(HAVE_SIGSET_T)
-  sigset_t sigmask;
+    sigset_t sigmask;
 #endif				/* HAVE_SIGSET_T */
-  ptw32_mcs_lock_t
-              robustMxListLock; /* robustMxList lock */
-  ptw32_robust_node_t*
-                  robustMxList; /* List of currenty held robust mutexes */
-  int ptErrno;
-  int detachState;
-  int sched_priority;		/* As set, not as currently is */
-  int cancelState;
-  int cancelType;
-  int implicit:1;
-  DWORD thread;			/* Win32 thread ID */
+    ptw32_mcs_lock_t
+    robustMxListLock; /* robustMxList lock */
+    ptw32_robust_node_t*
+    robustMxList; /* List of currenty held robust mutexes */
+    int ptErrno;
+    int detachState;
+    int sched_priority;		/* As set, not as currently is */
+    int cancelState;
+    int cancelType;
+    int implicit: 1;
+    DWORD thread;			/* Win32 thread ID */
 #if defined(_UWIN)
-  DWORD dummy[5];
+    DWORD dummy[5];
 #endif
-  size_t align;			/* Force alignment if this struct is packed */
+    size_t align;			/* Force alignment if this struct is packed */
 };
 
 
-/* 
+/*
  * Special value to mark attribute objects as valid.
  */
 #define PTW32_ATTR_VALID ((unsigned long) 0xC4C0FFEE)
 
-struct pthread_attr_t_
-{
-  unsigned long valid;
-  void *stackaddr;
-  size_t stacksize;
-  int detachstate;
-  struct sched_param param;
-  int inheritsched;
-  int contentionscope;
+struct pthread_attr_t_ {
+    unsigned long valid;
+    void* stackaddr;
+    size_t stacksize;
+    int detachstate;
+    struct sched_param param;
+    int inheritsched;
+    int contentionscope;
 #if defined(HAVE_SIGSET_T)
-  sigset_t sigmask;
+    sigset_t sigmask;
 #endif				/* HAVE_SIGSET_T */
 };
 
@@ -206,43 +166,40 @@ struct pthread_attr_t_
  * ====================
  */
 
-struct sem_t_
-{
-  int value;
-  pthread_mutex_t lock;
-  HANDLE sem;
+struct sem_t_ {
+    int value;
+    pthread_mutex_t lock;
+    HANDLE sem;
 #if defined(NEED_SEM)
-  int leftToUnblock;
+    int leftToUnblock;
 #endif
 };
 
 #define PTW32_OBJECT_AUTO_INIT ((void *)(size_t) -1)
 #define PTW32_OBJECT_INVALID   NULL
 
-struct pthread_mutex_t_
-{
-  LONG lock_idx;		/* Provides exclusive access to mutex state
+struct pthread_mutex_t_ {
+    LONG lock_idx;		/* Provides exclusive access to mutex state
 				   via the Interlocked* mechanism.
 				    0: unlocked/free.
 				    1: locked - no other waiters.
 				   -1: locked - with possible other waiters.
 				*/
-  int recursive_count;		/* Number of unlocks a thread needs to perform
+    int recursive_count;		/* Number of unlocks a thread needs to perform
 				   before the lock is released (recursive
 				   mutexes only). */
-  int kind;			/* Mutex type. */
-  pthread_t ownerThread;
-  HANDLE event;			/* Mutex release notification to waiting
+    int kind;			/* Mutex type. */
+    pthread_t ownerThread;
+    HANDLE event;			/* Mutex release notification to waiting
 				   threads. */
-  ptw32_robust_node_t*
-                    robustNode; /* Extra state for robust mutexes  */
+    ptw32_robust_node_t*
+    robustNode; /* Extra state for robust mutexes  */
 };
 
-enum ptw32_robust_state_t_
-{
-  PTW32_ROBUST_CONSISTENT,
-  PTW32_ROBUST_INCONSISTENT,
-  PTW32_ROBUST_NOTRECOVERABLE
+enum ptw32_robust_state_t_ {
+    PTW32_ROBUST_CONSISTENT,
+    PTW32_ROBUST_INCONSISTENT,
+    PTW32_ROBUST_NOTRECOVERABLE
 };
 
 typedef enum ptw32_robust_state_t_   ptw32_robust_state_t;
@@ -250,19 +207,17 @@ typedef enum ptw32_robust_state_t_   ptw32_robust_state_t;
 /*
  * Node used to manage per-thread lists of currently-held robust mutexes.
  */
-struct ptw32_robust_node_t_
-{
-  pthread_mutex_t mx;
-  ptw32_robust_state_t stateInconsistent;
-  ptw32_robust_node_t* prev;
-  ptw32_robust_node_t* next;
+struct ptw32_robust_node_t_ {
+    pthread_mutex_t mx;
+    ptw32_robust_state_t stateInconsistent;
+    ptw32_robust_node_t* prev;
+    ptw32_robust_node_t* next;
 };
 
-struct pthread_mutexattr_t_
-{
-  int pshared;
-  int kind;
-  int robustness;
+struct pthread_mutexattr_t_ {
+    int pshared;
+    int kind;
+    int robustness;
 };
 
 /*
@@ -287,212 +242,200 @@ struct pthread_mutexattr_t_
 #define PTW32_SPIN_LOCKED      (2)
 #define PTW32_SPIN_USE_MUTEX   (3)
 
-struct pthread_spinlock_t_
-{
-  long interlock;		/* Locking element for multi-cpus. */
-  union
-  {
-    int cpus;			/* No. of cpus if multi cpus, or   */
-    pthread_mutex_t mutex;	/* mutex if single cpu.            */
-  } u;
+struct pthread_spinlock_t_ {
+    long interlock;		/* Locking element for multi-cpus. */
+    union {
+        int cpus;			/* No. of cpus if multi cpus, or   */
+        pthread_mutex_t mutex;	/* mutex if single cpu.            */
+    } u;
 };
 
 /*
  * MCS lock queue node - see ptw32_MCS_lock.c
  */
-struct ptw32_mcs_node_t_
-{
-  struct ptw32_mcs_node_t_ **lock;        /* ptr to tail of queue */
-  struct ptw32_mcs_node_t_  *next;        /* ptr to successor in queue */
-  HANDLE                     readyFlag;   /* set after lock is released by
+struct ptw32_mcs_node_t_ {
+    struct ptw32_mcs_node_t_** lock;        /* ptr to tail of queue */
+    struct ptw32_mcs_node_t_*  next;        /* ptr to successor in queue */
+    HANDLE                     readyFlag;   /* set after lock is released by
                                              predecessor */
-  HANDLE                     nextFlag;    /* set after 'next' ptr is set by
+    HANDLE                     nextFlag;    /* set after 'next' ptr is set by
                                              successor */
 };
 
 
-struct pthread_barrier_t_
-{
-  unsigned int nCurrentBarrierHeight;
-  unsigned int nInitialBarrierHeight;
-  int pshared;
-  sem_t semBarrierBreeched;
-  ptw32_mcs_lock_t lock;
-  ptw32_mcs_local_node_t proxynode;
+struct pthread_barrier_t_ {
+    unsigned int nCurrentBarrierHeight;
+    unsigned int nInitialBarrierHeight;
+    int pshared;
+    sem_t semBarrierBreeched;
+    ptw32_mcs_lock_t lock;
+    ptw32_mcs_local_node_t proxynode;
 };
 
-struct pthread_barrierattr_t_
-{
-  int pshared;
+struct pthread_barrierattr_t_ {
+    int pshared;
 };
 
-struct pthread_key_t_
-{
-  DWORD key;
-  void (PTW32_CDECL *destructor) (void *);
-  ptw32_mcs_lock_t keyLock;
-  void *threads;
+struct pthread_key_t_ {
+    DWORD key;
+    void (PTW32_CDECL* destructor)(void*);
+    ptw32_mcs_lock_t keyLock;
+    void* threads;
 };
 
 
 typedef struct ThreadParms ThreadParms;
 
-struct ThreadParms
-{
-  pthread_t tid;
-  void *(PTW32_CDECL *start) (void *);
-  void *arg;
+struct ThreadParms {
+    pthread_t tid;
+    void* (PTW32_CDECL* start)(void*);
+    void* arg;
 };
 
 
-struct pthread_cond_t_
-{
-  long nWaitersBlocked;		/* Number of threads blocked            */
-  long nWaitersGone;		/* Number of threads timed out          */
-  long nWaitersToUnblock;	/* Number of threads to unblock         */
-  sem_t semBlockQueue;		/* Queue up threads waiting for the     */
-  /*   condition to become signalled      */
-  sem_t semBlockLock;		/* Semaphore that guards access to      */
-  /* | waiters blocked count/block queue  */
-  /* +-> Mandatory Sync.LEVEL-1           */
-  pthread_mutex_t mtxUnblockLock;	/* Mutex that guards access to          */
-  /* | waiters (to)unblock(ed) counts     */
-  /* +-> Optional* Sync.LEVEL-2           */
-  pthread_cond_t next;		/* Doubly linked list                   */
-  pthread_cond_t prev;
+struct pthread_cond_t_ {
+    long nWaitersBlocked;		/* Number of threads blocked            */
+    long nWaitersGone;		/* Number of threads timed out          */
+    long nWaitersToUnblock;	/* Number of threads to unblock         */
+    sem_t semBlockQueue;		/* Queue up threads waiting for the     */
+    /*   condition to become signalled      */
+    sem_t semBlockLock;		/* Semaphore that guards access to      */
+    /* | waiters blocked count/block queue  */
+    /* +-> Mandatory Sync.LEVEL-1           */
+    pthread_mutex_t mtxUnblockLock;	/* Mutex that guards access to          */
+    /* | waiters (to)unblock(ed) counts     */
+    /* +-> Optional* Sync.LEVEL-2           */
+    pthread_cond_t next;		/* Doubly linked list                   */
+    pthread_cond_t prev;
 };
 
 
-struct pthread_condattr_t_
-{
-  int pshared;
+struct pthread_condattr_t_ {
+    int pshared;
 };
 
 #define PTW32_RWLOCK_MAGIC 0xfacade2
 
-struct pthread_rwlock_t_
-{
-  pthread_mutex_t mtxExclusiveAccess;
-  pthread_mutex_t mtxSharedAccessCompleted;
-  pthread_cond_t cndSharedAccessCompleted;
-  int nSharedAccessCount;
-  int nExclusiveAccessCount;
-  int nCompletedSharedAccessCount;
-  int nMagic;
+struct pthread_rwlock_t_ {
+    pthread_mutex_t mtxExclusiveAccess;
+    pthread_mutex_t mtxSharedAccessCompleted;
+    pthread_cond_t cndSharedAccessCompleted;
+    int nSharedAccessCount;
+    int nExclusiveAccessCount;
+    int nCompletedSharedAccessCount;
+    int nMagic;
 };
 
-struct pthread_rwlockattr_t_
-{
-  int pshared;
+struct pthread_rwlockattr_t_ {
+    int pshared;
 };
 
 typedef struct ThreadKeyAssoc ThreadKeyAssoc;
 
-struct ThreadKeyAssoc
-{
-  /*
-   * Purpose:
-   *      This structure creates an association between a thread and a key.
-   *      It is used to implement the implicit invocation of a user defined
-   *      destroy routine for thread specific data registered by a user upon
-   *      exiting a thread.
-   *
-   *      Graphically, the arrangement is as follows, where:
-   *
-   *         K - Key with destructor
-   *            (head of chain is key->threads)
-   *         T - Thread that has called pthread_setspecific(Kn)
-   *            (head of chain is thread->keys)
-   *         A - Association. Each association is a node at the
-   *             intersection of two doubly-linked lists.
-   *
-   *                 T1    T2    T3
-   *                 |     |     |
-   *                 |     |     |
-   *         K1 -----+-----A-----A----->
-   *                 |     |     |
-   *                 |     |     |
-   *         K2 -----A-----A-----+----->
-   *                 |     |     |
-   *                 |     |     |
-   *         K3 -----A-----+-----A----->
-   *                 |     |     |
-   *                 |     |     |
-   *                 V     V     V
-   *
-   *      Access to the association is guarded by two locks: the key's
-   *      general lock (guarding the row) and the thread's general
-   *      lock (guarding the column). This avoids the need for a
-   *      dedicated lock for each association, which not only consumes
-   *      more handles but requires that the lock resources persist
-   *      until both the key is deleted and the thread has called the
-   *      destructor. The two-lock arrangement allows those resources
-   *      to be freed as soon as either thread or key is concluded.
-   *
-   *      To avoid deadlock, whenever both locks are required both the
-   *      key and thread locks are acquired consistently in the order
-   *      "key lock then thread lock". An exception to this exists
-   *      when a thread calls the destructors, however, this is done
-   *      carefully (but inelegantly) to avoid deadlock.
-   *
-   *      An association is created when a thread first calls
-   *      pthread_setspecific() on a key that has a specified
-   *      destructor.
-   *
-   *      An association is destroyed either immediately after the
-   *      thread calls the key destructor function on thread exit, or
-   *      when the key is deleted.
-   *
-   * Attributes:
-   *      thread
-   *              reference to the thread that owns the
-   *              association. This is actually the pointer to the
-   *              thread struct itself. Since the association is
-   *              destroyed before the thread exits, this can never
-   *              point to a different logical thread to the one that
-   *              created the assoc, i.e. after thread struct reuse.
-   *
-   *      key
-   *              reference to the key that owns the association.
-   *
-   *      nextKey
-   *              The pthread_t->keys attribute is the head of a
-   *              chain of associations that runs through the nextKey
-   *              link. This chain provides the 1 to many relationship
-   *              between a pthread_t and all pthread_key_t on which
-   *              it called pthread_setspecific.
-   *
-   *      prevKey
-   *              Similarly.
-   *
-   *      nextThread
-   *              The pthread_key_t->threads attribute is the head of
-   *              a chain of associations that runs through the
-   *              nextThreads link. This chain provides the 1 to many
-   *              relationship between a pthread_key_t and all the 
-   *              PThreads that have called pthread_setspecific for
-   *              this pthread_key_t.
-   *
-   *      prevThread
-   *              Similarly.
-   *
-   * Notes:
-   *      1)      As soon as either the key or the thread is no longer
-   *              referencing the association, it can be destroyed. The
-   *              association will be removed from both chains.
-   *
-   *      2)      Under WIN32, an association is only created by
-   *              pthread_setspecific if the user provided a
-   *              destroyRoutine when they created the key.
-   *
-   *
-   */
-  ptw32_thread_t * thread;
-  pthread_key_t key;
-  ThreadKeyAssoc *nextKey;
-  ThreadKeyAssoc *nextThread;
-  ThreadKeyAssoc *prevKey;
-  ThreadKeyAssoc *prevThread;
+struct ThreadKeyAssoc {
+    /*
+     * Purpose:
+     *      This structure creates an association between a thread and a key.
+     *      It is used to implement the implicit invocation of a user defined
+     *      destroy routine for thread specific data registered by a user upon
+     *      exiting a thread.
+     *
+     *      Graphically, the arrangement is as follows, where:
+     *
+     *         K - Key with destructor
+     *            (head of chain is key->threads)
+     *         T - Thread that has called pthread_setspecific(Kn)
+     *            (head of chain is thread->keys)
+     *         A - Association. Each association is a node at the
+     *             intersection of two doubly-linked lists.
+     *
+     *                 T1    T2    T3
+     *                 |     |     |
+     *                 |     |     |
+     *         K1 -----+-----A-----A----->
+     *                 |     |     |
+     *                 |     |     |
+     *         K2 -----A-----A-----+----->
+     *                 |     |     |
+     *                 |     |     |
+     *         K3 -----A-----+-----A----->
+     *                 |     |     |
+     *                 |     |     |
+     *                 V     V     V
+     *
+     *      Access to the association is guarded by two locks: the key's
+     *      general lock (guarding the row) and the thread's general
+     *      lock (guarding the column). This avoids the need for a
+     *      dedicated lock for each association, which not only consumes
+     *      more handles but requires that the lock resources persist
+     *      until both the key is deleted and the thread has called the
+     *      destructor. The two-lock arrangement allows those resources
+     *      to be freed as soon as either thread or key is concluded.
+     *
+     *      To avoid deadlock, whenever both locks are required both the
+     *      key and thread locks are acquired consistently in the order
+     *      "key lock then thread lock". An exception to this exists
+     *      when a thread calls the destructors, however, this is done
+     *      carefully (but inelegantly) to avoid deadlock.
+     *
+     *      An association is created when a thread first calls
+     *      pthread_setspecific() on a key that has a specified
+     *      destructor.
+     *
+     *      An association is destroyed either immediately after the
+     *      thread calls the key destructor function on thread exit, or
+     *      when the key is deleted.
+     *
+     * Attributes:
+     *      thread
+     *              reference to the thread that owns the
+     *              association. This is actually the pointer to the
+     *              thread struct itself. Since the association is
+     *              destroyed before the thread exits, this can never
+     *              point to a different logical thread to the one that
+     *              created the assoc, i.e. after thread struct reuse.
+     *
+     *      key
+     *              reference to the key that owns the association.
+     *
+     *      nextKey
+     *              The pthread_t->keys attribute is the head of a
+     *              chain of associations that runs through the nextKey
+     *              link. This chain provides the 1 to many relationship
+     *              between a pthread_t and all pthread_key_t on which
+     *              it called pthread_setspecific.
+     *
+     *      prevKey
+     *              Similarly.
+     *
+     *      nextThread
+     *              The pthread_key_t->threads attribute is the head of
+     *              a chain of associations that runs through the
+     *              nextThreads link. This chain provides the 1 to many
+     *              relationship between a pthread_key_t and all the
+     *              PThreads that have called pthread_setspecific for
+     *              this pthread_key_t.
+     *
+     *      prevThread
+     *              Similarly.
+     *
+     * Notes:
+     *      1)      As soon as either the key or the thread is no longer
+     *              referencing the association, it can be destroyed. The
+     *              association will be removed from both chains.
+     *
+     *      2)      Under WIN32, an association is only created by
+     *              pthread_setspecific if the user provided a
+     *              destroyRoutine when they created the key.
+     *
+     *
+     */
+    ptw32_thread_t* thread;
+    pthread_key_t key;
+    ThreadKeyAssoc* nextKey;
+    ThreadKeyAssoc* nextThread;
+    ThreadKeyAssoc* prevKey;
+    ThreadKeyAssoc* prevThread;
 };
 
 
@@ -557,14 +500,14 @@ struct ThreadKeyAssoc
 
 
 /* Declared in pthread_cancel.c */
-extern DWORD (*ptw32_register_cancelation) (PAPCFUNC, HANDLE, DWORD);
+extern DWORD (*ptw32_register_cancelation)(PAPCFUNC, HANDLE, DWORD);
 
 /* Thread Reuse stack bottom marker. Must not be NULL or any valid pointer to memory. */
 #define PTW32_THREAD_REUSE_EMPTY ((ptw32_thread_t *)(size_t) 1)
 
 extern int ptw32_processInitialized;
-extern ptw32_thread_t * ptw32_threadReuseTop;
-extern ptw32_thread_t * ptw32_threadReuseBottom;
+extern ptw32_thread_t* ptw32_threadReuseTop;
+extern ptw32_thread_t* ptw32_threadReuseBottom;
 extern pthread_key_t ptw32_selfThreadKey;
 extern pthread_key_t ptw32_cleanupKey;
 extern pthread_cond_t ptw32_cond_list_head;
@@ -602,74 +545,74 @@ extern "C"
  * =====================
  */
 
-  int ptw32_is_attr (const pthread_attr_t * attr);
+int ptw32_is_attr(const pthread_attr_t* attr);
 
-  int ptw32_cond_check_need_init (pthread_cond_t * cond);
-  int ptw32_mutex_check_need_init (pthread_mutex_t * mutex);
-  int ptw32_rwlock_check_need_init (pthread_rwlock_t * rwlock);
+int ptw32_cond_check_need_init(pthread_cond_t* cond);
+int ptw32_mutex_check_need_init(pthread_mutex_t* mutex);
+int ptw32_rwlock_check_need_init(pthread_rwlock_t* rwlock);
 
-  int ptw32_robust_mutex_inherit(pthread_mutex_t * mutex);
-  void ptw32_robust_mutex_add(pthread_mutex_t* mutex, pthread_t self);
-  void ptw32_robust_mutex_remove(pthread_mutex_t* mutex, ptw32_thread_t* otp);
+int ptw32_robust_mutex_inherit(pthread_mutex_t* mutex);
+void ptw32_robust_mutex_add(pthread_mutex_t* mutex, pthread_t self);
+void ptw32_robust_mutex_remove(pthread_mutex_t* mutex, ptw32_thread_t* otp);
 
-  DWORD
-    ptw32_RegisterCancelation (PAPCFUNC callback,
-			       HANDLE threadH, DWORD callback_arg);
+DWORD
+ptw32_RegisterCancelation(PAPCFUNC callback,
+                          HANDLE threadH, DWORD callback_arg);
 
-  int ptw32_processInitialize (void);
+int ptw32_processInitialize(void);
 
-  void ptw32_processTerminate (void);
+void ptw32_processTerminate(void);
 
-  void ptw32_threadDestroy (pthread_t tid);
+void ptw32_threadDestroy(pthread_t tid);
 
-  void ptw32_pop_cleanup_all (int execute);
+void ptw32_pop_cleanup_all(int execute);
 
-  pthread_t ptw32_new (void);
+pthread_t ptw32_new(void);
 
-  pthread_t ptw32_threadReusePop (void);
+pthread_t ptw32_threadReusePop(void);
 
-  void ptw32_threadReusePush (pthread_t thread);
+void ptw32_threadReusePush(pthread_t thread);
 
-  int ptw32_getprocessors (int *count);
+int ptw32_getprocessors(int* count);
 
-  int ptw32_setthreadpriority (pthread_t thread, int policy, int priority);
+int ptw32_setthreadpriority(pthread_t thread, int policy, int priority);
 
-  void ptw32_rwlock_cancelwrwait (void *arg);
+void ptw32_rwlock_cancelwrwait(void* arg);
 
 #if ! (defined (__MINGW64__) || defined(__MINGW32__)) || (defined(__MSVCRT__) && ! defined(__DMC__))
-  unsigned __stdcall
+unsigned __stdcall
 #else
-  void
+void
 #endif
-    ptw32_threadStart (void *vthreadParms);
+ptw32_threadStart(void* vthreadParms);
 
-  void ptw32_callUserDestroyRoutines (pthread_t thread);
+void ptw32_callUserDestroyRoutines(pthread_t thread);
 
-  int ptw32_tkAssocCreate (ptw32_thread_t * thread, pthread_key_t key);
+int ptw32_tkAssocCreate(ptw32_thread_t* thread, pthread_key_t key);
 
-  void ptw32_tkAssocDestroy (ThreadKeyAssoc * assoc);
+void ptw32_tkAssocDestroy(ThreadKeyAssoc* assoc);
 
-  int ptw32_semwait (sem_t * sem);
+int ptw32_semwait(sem_t* sem);
 
-  DWORD ptw32_relmillisecs (const struct timespec * abstime);
+DWORD ptw32_relmillisecs(const struct timespec* abstime);
 
-  void ptw32_mcs_lock_acquire (ptw32_mcs_lock_t * lock, ptw32_mcs_local_node_t * node);
+void ptw32_mcs_lock_acquire(ptw32_mcs_lock_t* lock, ptw32_mcs_local_node_t* node);
 
-  int ptw32_mcs_lock_try_acquire (ptw32_mcs_lock_t * lock, ptw32_mcs_local_node_t * node);
+int ptw32_mcs_lock_try_acquire(ptw32_mcs_lock_t* lock, ptw32_mcs_local_node_t* node);
 
-  void ptw32_mcs_lock_release (ptw32_mcs_local_node_t * node);
+void ptw32_mcs_lock_release(ptw32_mcs_local_node_t* node);
 
-  void ptw32_mcs_node_transfer (ptw32_mcs_local_node_t * new_node, ptw32_mcs_local_node_t * old_node);
+void ptw32_mcs_node_transfer(ptw32_mcs_local_node_t* new_node, ptw32_mcs_local_node_t* old_node);
 
 #if defined(NEED_FTIME)
-  void ptw32_timespec_to_filetime (const struct timespec *ts, FILETIME * ft);
-  void ptw32_filetime_to_timespec (const FILETIME * ft, struct timespec *ts);
+void ptw32_timespec_to_filetime(const struct timespec* ts, FILETIME* ft);
+void ptw32_filetime_to_timespec(const FILETIME* ft, struct timespec* ts);
 #endif
 
 /* Declared in misc.c */
 #if defined(NEED_CALLOC)
 #define calloc(n, s) ptw32_calloc(n, s)
-  void *ptw32_calloc (size_t n, size_t s);
+void* ptw32_calloc(size_t n, size_t s);
 #endif
 
 /* Declared in private.c */
@@ -681,9 +624,9 @@ extern "C"
  */
 #pragma warning(disable:4290)
 #endif
-  void ptw32_throw (DWORD exception)
+void ptw32_throw(DWORD exception)
 #if defined(__CLEANUP_CXX)
-    throw(ptw32_exception_cancel,ptw32_exception_exit)
+throw(ptw32_exception_cancel, ptw32_exception_exit)
 #endif
 ;
 
@@ -698,13 +641,13 @@ extern "C"
 extern "C"
 {
 #       endif
-  _CRTIMP unsigned long __cdecl _beginthread (void (__cdecl *) (void *),
-					      unsigned, void *);
-  _CRTIMP void __cdecl _endthread (void);
-  _CRTIMP unsigned long __cdecl _beginthreadex (void *, unsigned,
-						unsigned (__stdcall *) (void *),
-						void *, unsigned, unsigned *);
-  _CRTIMP void __cdecl _endthreadex (unsigned);
+_CRTIMP unsigned long __cdecl _beginthread(void (__cdecl*)(void*),
+        unsigned, void*);
+_CRTIMP void __cdecl _endthread(void);
+_CRTIMP unsigned long __cdecl _beginthreadex(void*, unsigned,
+        unsigned(__stdcall*)(void*),
+        void*, unsigned, unsigned*);
+_CRTIMP void __cdecl _endthreadex(unsigned);
 #       if defined(__cplusplus)
 }
 #       endif
@@ -917,7 +860,7 @@ extern "C"
 
 #if defined(NEED_CREATETHREAD)
 
-/* 
+/*
  * Macro uses args so we can cast start_proc to LPTHREAD_START_ROUTINE
  * in order to avoid warnings because of return type
  */

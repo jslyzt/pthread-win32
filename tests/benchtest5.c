@@ -1,44 +1,3 @@
-/*
- * benchtest5.c
- *
- *
- * --------------------------------------------------------------------------
- *
- *      Pthreads-win32 - POSIX Threads Library for Win32
- *      Copyright(C) 1998 John E. Bossom
- *      Copyright(C) 1999,2005 Pthreads-win32 contributors
- * 
- *      Contact Email: rpj@callisto.canberra.edu.au
- * 
- *      The current list of contributors is contained
- *      in the file CONTRIBUTORS included with the source
- *      code distribution. The list can also be seen at the
- *      following World Wide Web location:
- *      http://sources.redhat.com/pthreads-win32/contributors.html
- * 
- *      This library is free software; you can redistribute it and/or
- *      modify it under the terms of the GNU Lesser General Public
- *      License as published by the Free Software Foundation; either
- *      version 2 of the License, or (at your option) any later version.
- * 
- *      This library is distributed in the hope that it will be useful,
- *      but WITHOUT ANY WARRANTY; without even the implied warranty of
- *      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- *      Lesser General Public License for more details.
- * 
- *      You should have received a copy of the GNU Lesser General Public
- *      License along with this library in the file COPYING.LIB;
- *      if not, write to the Free Software Foundation, Inc.,
- *      59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
- *
- * --------------------------------------------------------------------------
- *
- * Measure time taken to complete an elementary operation.
- *
- * - Semaphore
- *   Single thread iteration over post/wait for a semaphore.
- */
-
 #include "test.h"
 #include <sys/timeb.h>
 
@@ -74,86 +33,82 @@ int zero = 0;
   }; PTW32_FTIME(&currSysTimeStop); if (j + k == i) j++; }
 
 
-void
-reportTest (char * testNameString)
-{
-  durationMilliSecs = GetDurationMilliSecs(currSysTimeStart, currSysTimeStop) - overHeadMilliSecs;
+void reportTest(char* testNameString) {
+    durationMilliSecs = GetDurationMilliSecs(currSysTimeStart, currSysTimeStop) - overHeadMilliSecs;
 
-  printf( "%-45s %15ld %15.3f\n",
-	    testNameString,
-          durationMilliSecs,
-          (float) durationMilliSecs * 1E3 / ITERATIONS);
+    printf("%-45s %15ld %15.3f\n",
+           testNameString,
+           durationMilliSecs,
+           (float) durationMilliSecs * 1E3 / ITERATIONS);
 }
 
 
-int
-main (int argc, char *argv[])
-{
-  printf( "=============================================================================\n");
-  printf( "\nOperations on a semaphore.\n%ld iterations\n\n",
-          ITERATIONS);
-  printf( "%-45s %15s %15s\n",
-	    "Test",
-	    "Total(msec)",
-	    "average(usec)");
-  printf( "-----------------------------------------------------------------------------\n");
+int main(int argc, char* argv[]) {
+    printf("=============================================================================\n");
+    printf("\nOperations on a semaphore.\n%ld iterations\n\n",
+           ITERATIONS);
+    printf("%-45s %15s %15s\n",
+           "Test",
+           "Total(msec)",
+           "average(usec)");
+    printf("-----------------------------------------------------------------------------\n");
 
-  /*
-   * Time the loop overhead so we can subtract it from the actual test times.
-   */
+    /*
+     * Time the loop overhead so we can subtract it from the actual test times.
+     */
 
-  TESTSTART
-  assert(1 == one);
-  TESTSTOP
+    TESTSTART
+    assert(1 == one);
+    TESTSTOP
 
-  durationMilliSecs = GetDurationMilliSecs(currSysTimeStart, currSysTimeStop) - overHeadMilliSecs;
-  overHeadMilliSecs = durationMilliSecs;
+    durationMilliSecs = GetDurationMilliSecs(currSysTimeStart, currSysTimeStop) - overHeadMilliSecs;
+    overHeadMilliSecs = durationMilliSecs;
 
 
-  /*
-   * Now we can start the actual tests
-   */
-  assert((w32sema = CreateSemaphore(NULL, (long) 0, (long) ITERATIONS, NULL)) != 0);
-  TESTSTART
-  assert((ReleaseSemaphore(w32sema, 1, NULL),1) == one);
-  TESTSTOP
-  assert(CloseHandle(w32sema) != 0);
+    /*
+     * Now we can start the actual tests
+     */
+    assert((w32sema = CreateSemaphore(NULL, (long) 0, (long) ITERATIONS, NULL)) != 0);
+    TESTSTART
+    assert((ReleaseSemaphore(w32sema, 1, NULL), 1) == one);
+    TESTSTOP
+    assert(CloseHandle(w32sema) != 0);
 
-  reportTest("W32 Post with no waiters");
-
-
-  assert((w32sema = CreateSemaphore(NULL, (long) ITERATIONS, (long) ITERATIONS, NULL)) != 0);
-  TESTSTART
-  assert((WaitForSingleObject(w32sema, INFINITE),1) == one);
-  TESTSTOP
-  assert(CloseHandle(w32sema) != 0);
-
-  reportTest("W32 Wait without blocking");
+    reportTest("W32 Post with no waiters");
 
 
-  assert(sem_init(&sema, 0, 0) == 0);
-  TESTSTART
-  assert((sem_post(&sema),1) == one);
-  TESTSTOP
-  assert(sem_destroy(&sema) == 0);
+    assert((w32sema = CreateSemaphore(NULL, (long) ITERATIONS, (long) ITERATIONS, NULL)) != 0);
+    TESTSTART
+    assert((WaitForSingleObject(w32sema, INFINITE), 1) == one);
+    TESTSTOP
+    assert(CloseHandle(w32sema) != 0);
 
-  reportTest("POSIX Post with no waiters");
-
-
-  assert(sem_init(&sema, 0, ITERATIONS) == 0);
-  TESTSTART
-  assert((sem_wait(&sema),1) == one);
-  TESTSTOP
-  assert(sem_destroy(&sema) == 0);
-
-  reportTest("POSIX Wait without blocking");
+    reportTest("W32 Wait without blocking");
 
 
-  printf( "=============================================================================\n");
+    assert(sem_init(&sema, 0, 0) == 0);
+    TESTSTART
+    assert((sem_post(&sema), 1) == one);
+    TESTSTOP
+    assert(sem_destroy(&sema) == 0);
 
-  /*
-   * End of tests.
-   */
+    reportTest("POSIX Post with no waiters");
 
-  return 0;
+
+    assert(sem_init(&sema, 0, ITERATIONS) == 0);
+    TESTSTART
+    assert((sem_wait(&sema), 1) == one);
+    TESTSTOP
+    assert(sem_destroy(&sema) == 0);
+
+    reportTest("POSIX Wait without blocking");
+
+
+    printf("=============================================================================\n");
+
+    /*
+     * End of tests.
+     */
+
+    return 0;
 }
