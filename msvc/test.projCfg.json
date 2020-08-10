@@ -1,0 +1,6 @@
+{
+	"dir": ["../tests"],
+	"filter": {
+		"unfold": true
+	}
+}
