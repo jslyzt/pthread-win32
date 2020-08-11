@@ -1,9 +1,7 @@
 #include "test.h"
 
 int main() {
-    HINSTANCE hinst;
-
-    assert((hinst = LoadLibrary("pthread")) != (HINSTANCE) 0);
+    HINSTANCE hinst = LoadLibrary("pthread");
 
     Sleep(100);
 

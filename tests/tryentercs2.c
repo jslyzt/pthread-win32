@@ -24,8 +24,7 @@ int main() {
      * Load KERNEL32 and try to get address of TryEnterCriticalSection
      */
     _h_kernel32 = LoadLibrary(TEXT("KERNEL32.DLL"));
-    _try_enter_critical_section = (BOOL (PT_STDCALL*)(LPCRITICAL_SECTION))GetProcAddress(_h_kernel32, (LPCSTR) "TryEnterCriticalSection");
-
+    _try_enter_critical_section = GetProcAddress(_h_kernel32, (LPCSTR) "TryEnterCriticalSection");
     if (_try_enter_critical_section != NULL) {
         SetLastError(0);
 
@@ -36,10 +35,8 @@ int main() {
 
     (void) FreeLibrary(_h_kernel32);
 
-    printf("This system %s TryEnterCriticalSection.\n",
-           (_try_enter_critical_section == NULL) ? "DOES NOT SUPPORT" : "SUPPORTS");
-    printf("POSIX Mutexes will be based on Win32 %s.\n",
-           (_try_enter_critical_section == NULL) ? "Mutexes" : "Critical Sections");
+    printf("This system %s TryEnterCriticalSection.\n", (_try_enter_critical_section == NULL) ? "DOES NOT SUPPORT" : "SUPPORTS");
+    printf("POSIX Mutexes will be based on Win32 %s.\n", (_try_enter_critical_section == NULL) ? "Mutexes" : "Critical Sections");
 
     return (0);
 }

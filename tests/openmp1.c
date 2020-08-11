@@ -43,9 +43,9 @@ void* _thread(void* Id) {
 #ifdef _OPENMP
         #  pragma omp critical
 #endif
-        printf("Id %d : %s : %d(should be %d)\n", (int)Id, __FUNCTION__, Sum, ShouldSum);
+        printf("Id %d : %s : %d(should be %d)\n", *((int*)Id), __FUNCTION__, Sum, ShouldSum);
     }
-    if (Sum == ShouldSum) { ThreadOK[(int)Id] = 1; }
+    if (Sum == ShouldSum) { ThreadOK[*((int*)Id)] = 1; }
     return NULL;
 }
 

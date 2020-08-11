@@ -1,8 +1,8 @@
 #define _WIN32_WINNT 0x400
 
 #include "test.h"
-#include "../implement.h"
-#include "../context.h"
+#include "../src/implement.h"
+#include "../src/context.h"
 
 static int washere = 0;
 

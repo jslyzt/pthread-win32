@@ -25,7 +25,7 @@ int main() {
      * Load KERNEL32 and try to get address of TryEnterCriticalSection
      */
     _h_kernel32 = LoadLibrary(TEXT("KERNEL32.DLL"));
-    _try_enter_critical_section = (BOOL (PT_STDCALL*)(LPCRITICAL_SECTION))GetProcAddress(_h_kernel32, (LPCSTR) "TryEnterCriticalSection");
+    _try_enter_critical_section = GetProcAddress(_h_kernel32, (LPCSTR) "TryEnterCriticalSection");
 
     if (_try_enter_critical_section != NULL) {
         InitializeCriticalSection(&cs);

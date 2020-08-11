@@ -29,22 +29,10 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\src\attr.c">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\autostatic.c">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\barrier.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\cancel.c">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\cleanup.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\condvar.c">
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="..\src\create.c">
@@ -56,28 +44,10 @@
     <ClCompile Include="..\src\errno.c">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\exit.c">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\fork.c">
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="..\src\global.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\misc.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\mutex.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\nonportable.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\private.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\pthread.c">
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="..\src\pthread_attr_destroy.c">
@@ -356,9 +326,6 @@
     <ClCompile Include="..\src\ptw32_MCS_lock.c">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\ptw32_OLL_lock.c">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\ptw32_callUserDestroyRoutines.c">
       <Filter>src</Filter>
     </ClCompile>
@@ -422,12 +389,6 @@
     <ClCompile Include="..\src\ptw32_tkAssocDestroy.c">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\rwlock.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\sched.c">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\sched_get_priority_max.c">
       <Filter>src</Filter>
     </ClCompile>
@@ -476,23 +437,11 @@
     <ClCompile Include="..\src\sem_wait.c">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\semaphore.c">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\signal.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\spin.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\sync.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\tsd.c">
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="..\src\w32_CancelableWait.c">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
-</Project>
+  </Project>

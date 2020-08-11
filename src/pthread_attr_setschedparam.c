@@ -2,8 +2,7 @@
 #include "implement.h"
 #include "sched.h"
 
-int pthread_attr_setschedparam(pthread_attr_t* attr,
-                           const struct sched_param* param) {
+int pthread_attr_setschedparam(pthread_attr_t* attr, const struct sched_param* param) {
     int priority;
 
     if (ptw32_is_attr(attr) != 0 || param == NULL) {

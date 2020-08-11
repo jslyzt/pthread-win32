@@ -4,9 +4,7 @@
 #include <process.h>
 #endif
 
-int pthread_create(pthread_t* tid,
-               const pthread_attr_t* attr,
-               void* (PTW32_CDECL* start)(void*), void* arg)
+int pthread_create(pthread_t* tid, const pthread_attr_t* attr, void* (PTW32_CDECL* start)(void*), void* arg)
 /*
  * ------------------------------------------------------
  * DOCPUBLIC

@@ -21,13 +21,9 @@ int ptw32_getprocessors(int* count) {
     int result = 0;
 
 #if defined(NEED_PROCESS_AFFINITY_MASK)
-
     *count = 1;
-
 #else
-
-    if (GetProcessAffinityMask(GetCurrentProcess(),
-                               &vProcessCPUs, &vSystemCPUs)) {
+    if (GetProcessAffinityMask(GetCurrentProcess(), &vProcessCPUs, &vSystemCPUs)) {
         DWORD_PTR bit;
         int CPUs = 0;
 
@@ -40,8 +36,6 @@ int ptw32_getprocessors(int* count) {
     } else {
         result = EAGAIN;
     }
-
 #endif
-
     return (result);
 }

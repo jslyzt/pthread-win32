@@ -1,8 +1,7 @@
 #include "pthread.h"
 #include "implement.h"
 
-static INLINE int
-ptw32_cond_unblock(pthread_cond_t* cond, int unblockAll)
+static INLINE int ptw32_cond_unblock(pthread_cond_t* cond, int unblockAll)
 /*
  * Notes.
  *

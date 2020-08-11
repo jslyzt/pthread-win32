@@ -14,6 +14,7 @@
     <ProjectName>dll</ProjectName>
     <ProjectGuid>{5D459BA0-5EEB-47D3-A1C4-6B55C8D37EC0}</ProjectGuid>
     <RootNamespace>pthread</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
@@ -54,6 +55,12 @@
     <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
     <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
     <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <TargetName>pthread</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <TargetName>pthread</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <CustomBuildStep>
@@ -98,7 +105,6 @@
     </ResourceCompile>
     <Link>
       <AdditionalDependencies>ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>$(OutDir)$(ProjectName).dll</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <GenerateMapFile>true</GenerateMapFile>
@@ -155,7 +161,6 @@
     </ResourceCompile>
     <Link>
       <AdditionalDependencies>ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>$(OutDir)$(ProjectName).dll</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <GenerateMapFile>true</GenerateMapFile>
@@ -186,23 +191,13 @@
     <ClInclude Include="..\src\semaphore.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\src\attr.c" />
     <ClCompile Include="..\src\autostatic.c" />
-    <ClCompile Include="..\src\barrier.c" />
-    <ClCompile Include="..\src\cancel.c" />
     <ClCompile Include="..\src\cleanup.c" />
-    <ClCompile Include="..\src\condvar.c" />
     <ClCompile Include="..\src\create.c" />
     <ClCompile Include="..\src\dll.c" />
     <ClCompile Include="..\src\errno.c" />
-    <ClCompile Include="..\src\exit.c" />
     <ClCompile Include="..\src\fork.c" />
     <ClCompile Include="..\src\global.c" />
-    <ClCompile Include="..\src\misc.c" />
-    <ClCompile Include="..\src\mutex.c" />
-    <ClCompile Include="..\src\nonportable.c" />
-    <ClCompile Include="..\src\private.c" />
-    <ClCompile Include="..\src\pthread.c" />
     <ClCompile Include="..\src\pthread_attr_destroy.c" />
     <ClCompile Include="..\src\pthread_attr_getdetachstate.c" />
     <ClCompile Include="..\src\pthread_attr_getinheritsched.c" />
@@ -295,7 +290,6 @@
     <ClCompile Include="..\src\pthread_timechange_handler_np.c" />
     <ClCompile Include="..\src\pthread_win32_attach_detach_np.c" />
     <ClCompile Include="..\src\ptw32_MCS_lock.c" />
-    <ClCompile Include="..\src\ptw32_OLL_lock.c" />
     <ClCompile Include="..\src\ptw32_callUserDestroyRoutines.c" />
     <ClCompile Include="..\src\ptw32_calloc.c" />
     <ClCompile Include="..\src\ptw32_cond_check_need_init.c" />
@@ -317,8 +311,6 @@
     <ClCompile Include="..\src\ptw32_timespec.c" />
     <ClCompile Include="..\src\ptw32_tkAssocCreate.c" />
     <ClCompile Include="..\src\ptw32_tkAssocDestroy.c" />
-    <ClCompile Include="..\src\rwlock.c" />
-    <ClCompile Include="..\src\sched.c" />
     <ClCompile Include="..\src\sched_get_priority_max.c" />
     <ClCompile Include="..\src\sched_get_priority_min.c" />
     <ClCompile Include="..\src\sched_getscheduler.c" />
@@ -335,11 +327,7 @@
     <ClCompile Include="..\src\sem_trywait.c" />
     <ClCompile Include="..\src\sem_unlink.c" />
     <ClCompile Include="..\src\sem_wait.c" />
-    <ClCompile Include="..\src\semaphore.c" />
     <ClCompile Include="..\src\signal.c" />
-    <ClCompile Include="..\src\spin.c" />
-    <ClCompile Include="..\src\sync.c" />
-    <ClCompile Include="..\src\tsd.c" />
     <ClCompile Include="..\src\w32_CancelableWait.c" />
   </ItemGroup>
 </Project>
